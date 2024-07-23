@@ -1,7 +1,7 @@
 package hello.jdbc.service;
 
 import hello.jdbc.domain.Member;
-import hello.jdbc.repository.MemberRepositoryV1;
+import hello.jdbc.repository.MemberRepositoryV2;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
@@ -10,9 +10,9 @@ import java.sql.SQLException;
 public class MemberServiceV2 {
 
     private final DataSource dataSource;
-    private final MemberRepositoryV1 memberRepository;
+    private final MemberRepositoryV2 memberRepository;
 
-    public MemberServiceV2(DataSource dateSource, MemberRepositoryV1 memberRepository) {
+    public MemberServiceV2(DataSource dateSource, MemberRepositoryV2 memberRepository) {
         this.dataSource = dateSource;
         this.memberRepository = memberRepository;
     }
@@ -29,7 +29,7 @@ public class MemberServiceV2 {
 
         try{
             con.setAutoCommit(false); //트랜잭션 시작
-            bizLogic(fromId, toId, money); //비지니스 로직
+            bizLogic(fromId, toId, money, con); //비지니스 로직
             con.commit(); //성공시 커밋
         } catch (Exception e) {
             con.rollback(); //실패시 롤백
@@ -43,17 +43,18 @@ public class MemberServiceV2 {
     private void validation(Member toMember) {
         if(toMember.getMemberId().equals("ex")){
             throw new IllegalStateException("이체중 예외 발생");
-        }
+                    }
     }
 
-    private void bizLogic(String fromId, String toId, int money) throws SQLException {
+    private void bizLogic(String fromId, String toId, int money, Connection con) throws SQLException {
         Member fromMember = memberRepository.findById(fromId);
         Member toMember = memberRepository.findById(toId);
 
-        memberRepository.update(fromId, (fromMember.getMoney() - money));
+        memberRepository.update(con, fromId, (fromMember.getMoney() - money));
         validation(toMember);
-        memberRepository.update(toId, (toMember.getMoney() + money));
+        memberRepository.update(con, toId, (toMember.getMoney() + money));
     }
+
 
     private void release(Connection con) throws SQLException {
         con.setAutoCommit(true); // 커넥션 풀에 반납하기 전에 오토커밋으로 변경
