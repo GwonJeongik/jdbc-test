@@ -70,6 +70,13 @@ class MemberServiceV3_3Test {
     }
 
     @Test
+    @DisplayName("트랜잭션 AOP 적용 확인")
+    void AopCheck() {
+        log.info("MemberRepositoryV3 class={}", repositoryV3.getClass());
+        log.info("MemberserviceV3_3 class={}", memberServiceV3_3.getClass());
+    }
+
+    @Test
     @DisplayName("정상 이체")
     void accountTransfer() throws SQLException {
         //given
