@@ -27,9 +27,10 @@ public class MemberServiceV2 {
 
         Connection con = dataSource.getConnection(); //커넥션 획득
 
+        // 비지니스 로직과 데이터 베이스 로직이 섞여있는 문제!
         try{
             con.setAutoCommit(false); //트랜잭션 시작
-            bizLogic(fromId, toId, money, con); //비지니스 로직
+            bizLogic(con, fromId, toId, money); //비지니스 로직
             con.commit(); //성공시 커밋
         } catch (Exception e) {
             con.rollback(); //실패시 롤백
@@ -46,7 +47,7 @@ public class MemberServiceV2 {
                     }
     }
 
-    private void bizLogic(String fromId, String toId, int money, Connection con) throws SQLException {
+    private void bizLogic(Connection con, String fromId, String toId, int money) throws SQLException {
         Member fromMember = memberRepository.findById(fromId);
         Member toMember = memberRepository.findById(toId);
 
