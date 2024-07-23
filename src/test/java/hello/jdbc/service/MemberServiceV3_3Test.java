@@ -7,6 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.aop.support.AopUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.TestConfiguration;
@@ -73,7 +74,11 @@ class MemberServiceV3_3Test {
     @DisplayName("트랜잭션 AOP 적용 확인")
     void AopCheck() {
         log.info("MemberRepositoryV3 class={}", repositoryV3.getClass());
-        log.info("MemberserviceV3_3 class={}", memberServiceV3_3.getClass());
+        log.info("MemberServiceV3_3 class={}", memberServiceV3_3.getClass());
+        assertThat(AopUtils.isAopProxy(memberServiceV3_3)).isTrue();
+        assertThat(AopUtils.isAopProxy(repositoryV3)).isFalse();
+
+
     }
 
     @Test
