@@ -2,11 +2,13 @@ package hello.jdbc.service;
 
 import hello.jdbc.domain.Member;
 import hello.jdbc.repository.MemberRepositoryV2;
+import lombok.extern.slf4j.Slf4j;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.SQLException;
 
+@Slf4j
 public class MemberServiceV2 {
 
     private final DataSource dataSource;
@@ -58,8 +60,14 @@ public class MemberServiceV2 {
 
 
     private void release(Connection con) throws SQLException {
-        con.setAutoCommit(true); // 커넥션 풀에 반납하기 전에 오토커밋으로 변경
-        con.close(); // 커넥션 반납
+        if (con != null) {
+            try {
+                con.setAutoCommit(true); // 커넥션 풀에 반납하기 전에 오토커밋으로 변경
+                con.close(); // 커넥션 반납
+            } catch (Exception e) {
+                log.error("error", e);
+            }
+        }
     }
 
 

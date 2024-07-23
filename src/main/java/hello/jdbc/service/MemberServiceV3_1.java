@@ -58,12 +58,4 @@ public class MemberServiceV3_1 {
         validation(toMember);
         memberRepository.update(toId, (toMember.getMoney() + money));
     }
-
-
-    private void release(Connection con) throws SQLException {
-        con.setAutoCommit(true); // 커넥션 풀에 반납하기 전에 오토커밋으로 변경
-        con.close(); // 커넥션 반납
-    }
-
-
 }

@@ -3,25 +3,20 @@ package hello.jdbc.service;
 import hello.jdbc.domain.Member;
 import hello.jdbc.repository.MemberRepositoryV3;
 import org.springframework.transaction.PlatformTransactionManager;
-import org.springframework.transaction.TransactionStatus;
-import org.springframework.transaction.support.DefaultTransactionDefinition;
-import org.springframework.transaction.support.TransactionTemplate;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Connection;
 import java.sql.SQLException;
 
 /**
- * 트랜잭션 - 트랜잭션 템플릿
- * 트랜잭션 시작 - 종료의 반복되는 부분 해결.
+ * 트랜잭션 - 트랜잭션 프록시
  */
 
-public class MemberServiceV3_2 {
+public class MemberServiceV3_3 {
 
-    private final TransactionTemplate txTemplate;
     private final MemberRepositoryV3 memberRepository;
 
-    public MemberServiceV3_2(PlatformTransactionManager transactionManager, MemberRepositoryV3 memberRepository) {
-        this.txTemplate = new TransactionTemplate(transactionManager);
+    public MemberServiceV3_3(MemberRepositoryV3 memberRepository) {
         this.memberRepository = memberRepository;
     }
 
@@ -31,15 +26,10 @@ public class MemberServiceV3_2 {
      * 보내는 사람은 현재 잔액에서 (-)
      * 받는 사람은 현재 잔액에서 (+) 처리한다.
      */
-    public void accountTransfer(String fromId, String toId, int money) throws SQLException {
 
-        txTemplate.executeWithoutResult((transactionStatus -> {
-            try {
-                bizLogic(fromId, toId, money); //비지니스 로직
-            } catch (SQLException e) {
-                throw new IllegalStateException(e);
-            }
-        }));
+    @Transactional
+    public void accountTransfer(String fromId, String toId, int money) throws SQLException {
+        bizLogic(fromId, toId, money); //비지니스 로직
     }
 
     private void validation(Member toMember) {
