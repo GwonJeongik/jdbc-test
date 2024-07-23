@@ -179,7 +179,7 @@ public class MemberRepositoryV3 {
     private void close(Connection con, PreparedStatement pstmt, ResultSet rs) {
         JdbcUtils.closeResultSet(rs);
         JdbcUtils.closeStatement(pstmt);
-        DataSourceUtils.releaseConnection(con, dataSource); // 트랜잭션을 사용한 커넥션이면 연결을 끊고, 아니면 그냥 둔다.
+        DataSourceUtils.releaseConnection(con, dataSource); // 트랜잭션을 사용하는 커넥션이면 연결을 끊고, 아니면 그냥 둔다.
 //        JdbcUtils.closeConnection(con);
 
     }
