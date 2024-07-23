@@ -16,23 +16,27 @@ import static hello.jdbc.connect.ConnectionConst.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-class MemberServiceV3_1Test {
+class MemberServiceV3_2Test {
 
     private static final String MEMBER_A = "memberA";
     private static final String MEMBER_B = "memberB";
     private static final String MEMBER_EX = "ex";
 
     private MemberRepositoryV3 repositoryV3;
-    private MemberServiceV3_1 memberServiceV3_1;
+    private MemberServiceV3_2 memberServiceV3_2;
 
     @BeforeEach
     void beforeEach() {
+        //데이터 소스 생성
         DriverManagerDataSource dataSource = new DriverManagerDataSource(URL, USERNAME, PASSWORD);
 
+        //트랜잭션 매니저 생성
+        // -> JDBC 트랜잭션 매니저 생성 (데이터 소스 필요)
+        // -> 트랜잭션 템플릿은 커넥션 생성을 위해 내부에 데이터 소스 가지고 있음
         PlatformTransactionManager transactionManager = new DataSourceTransactionManager(dataSource);
 
         repositoryV3 = new MemberRepositoryV3(dataSource);
-        memberServiceV3_1 = new MemberServiceV3_1(transactionManager, repositoryV3);
+        memberServiceV3_2 = new MemberServiceV3_2(transactionManager, repositoryV3);
     }
 
     @AfterEach
@@ -53,8 +57,8 @@ class MemberServiceV3_1Test {
         repositoryV3.save(memberB);
 
         //when
-        memberServiceV3_1.accountTransfer(memberA.getMemberId(), memberB.getMemberId(), 2000);
-        
+        memberServiceV3_2.accountTransfer(memberA.getMemberId(), memberB.getMemberId(), 2000);
+
         //then
         Member findMemberA = repositoryV3.findById(memberA.getMemberId());
         Member findMemberB = repositoryV3.findById(memberB.getMemberId());
@@ -73,7 +77,7 @@ class MemberServiceV3_1Test {
         repositoryV3.save(memberEx);
 
         //when
-        assertThatThrownBy(() -> memberServiceV3_1.accountTransfer(memberA.getMemberId(), memberEx.getMemberId(), 2000))
+        assertThatThrownBy(() -> memberServiceV3_2.accountTransfer(memberA.getMemberId(), memberEx.getMemberId(), 2000))
                 .isInstanceOf(IllegalStateException.class);
 
         //then
