@@ -3,6 +3,7 @@ package hello.jdbc.service;
 import hello.jdbc.domain.Member;
 import hello.jdbc.repository.MemberRepositoryV3;
 import jakarta.annotation.PostConstruct;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
@@ -36,11 +37,7 @@ class MemberServiceV3_4Test {
 
     private MemberRepositoryV3 repositoryV3;
     private MemberServiceV3_3 memberServiceV3_3;
-    @Qualifier("dataSource")
-    @Autowired
-    private DataSource dataSource;
-    @Autowired
-    private DataSourceTransactionManager transactionManager;
+
 
     @Autowired
     public MemberServiceV3_4Test(MemberRepositoryV3 repositoryV3, MemberServiceV3_3 memberServiceV3_3) {
@@ -49,16 +46,11 @@ class MemberServiceV3_4Test {
     }
 
     @TestConfiguration
+    @RequiredArgsConstructor
     static class testConfig {
 
         private final DataSource dataSource;
         private final PlatformTransactionManager transactionManager;
-
-        @Autowired // 생성자가 1개 있으므로, 생략 가능
-        testConfig(DataSource dataSource, PlatformTransactionManager transactionManager) {
-            this.dataSource = dataSource;
-            this.transactionManager = transactionManager;
-        }
 
         @PostConstruct
         void postConstruct() {
