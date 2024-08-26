@@ -37,6 +37,7 @@ public class MemberRepositoryV4_1 implements MemberRepository{
      * 데이터 세팅하고 실행
      * 자원 연결 해제
      */
+    @Override
     public Member save(Member member) {
         String sql = "insert into member(member_id, money) values(?, ?)";
 
@@ -65,6 +66,7 @@ public class MemberRepositoryV4_1 implements MemberRepository{
      * 커넥터 찾아오고, (sql 과 조회에 필요한, 매개변수로 넘길 데이터를 보관), 데이터 베이스 조회 결과
      * cursor이 데이터 지정하게 이동
      */
+    @Override
     public Member findById(String memberId) {
         String sql = "select * from member where member_id = ?"; // 조회하는 sql문
 
@@ -108,7 +110,7 @@ public class MemberRepositoryV4_1 implements MemberRepository{
      * 데이터 베이스에서 필요한 부분 변경
      * 자원 끊기
      */
-
+    @Override
     public void update(String memberId, int money) {
         String sql = "update member set money=? where member_id=?"; // sql injection 공격 막으려 바인딩
 
@@ -140,6 +142,7 @@ public class MemberRepositoryV4_1 implements MemberRepository{
      * 실행
      * 자원 끊기
      */
+    @Override
     public void delete(String memberId) {
         String sql = "delete from member where member_id=?";
 
